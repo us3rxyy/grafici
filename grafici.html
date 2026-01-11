@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evoluzione Temporale Inquinamento-Criminalità</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.8em;
+        }
+        h2 {
+            color: #34495e;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+        .chart-container {
+            position: relative;
+            height: 600px;
+            margin-bottom: 20px;
+        }
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.95em;
+            color: #856404;
+            line-height: 1.6;
+        }
+        .highlight {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.95em;
+            color: #2e7d32;
+            line-height: 1.6;
+        }
+        .city-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .city-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+        }
+        .city-card h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        .city-chart {
+            height: 400px;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <h1>Evoluzione Temporale: Inquinamento e Criminalità (2019-2024)</h1>
+
+    <div class="container">
+        <h2>Milano - Doppia Emergenza in Evoluzione</h2>
+        <div class="chart-container">
+            <canvas id="chartMilano"></canvas>
+        </div>
+        <div class="highlight">
+            <strong>Correlazione Evidente:</strong> A Milano si osserva un pattern chiaro. Dopo il calo del 2020-2021 (lockdown), sia l'inquinamento che la criminalità riprendono a crescere. Nel 2022 i giorni di sforamento PM10 salgono a 84 e le denunce raggiungono 6.991/100k. Nel 2023 la criminalità tocca il picco di 7.093/100k con 68 giorni di sforamento PM10. Il 2024 mostra stabilità su entrambi i fronti.
+        </div>
+        <div class="note">
+            <strong>Dati Milano:</strong><br>
+            • PM10: 2020→90 giorni, 2021→61 giorni, 2022→84 giorni, 2023-2024→68 giorni<br>
+            • PM2.5: da 29 µg/m³ (2017) a 21 µg/m³ (2023)<br>
+            • Criminalità: 2019→6.762/100k, 2020-2021→calo pandemia, 2022→6.991/100k, 2023→7.093/100k, 2024→6.952/100k
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Torino</h2>
+        <div class="chart-container">
+            <canvas id="chartTorino"></canvas>
+        </div>
+        <div class="highlight">
+            <strong>Pattern Parallelo:</strong> Torino mostra un andamento simile a Milano. Dopo il lockdown, sia inquinamento che criminalità risalgono. I giorni di sforamento PM10 passano da ~50 nel 2021 a 66 nel 2023. La criminalità cresce del 2.7% rispetto al 2019, posizionando Torino al 5° posto nazionale. Nel 2024 leggero miglioramento su entrambi i fronti.
+        </div>
+        <div class="note">
+            <strong>Dati Torino:</strong><br>
+            • PM10: 2021→~50 giorni, 2023→66 giorni, 2024→~60 giorni<br>
+            • PM10 medio: stabile a 30 µg/m³<br>
+            • Criminalità: costante crescita dal 2019, +2.7% rispetto al pre-Covid<br>
+            • Ranking nazionale: 5° posto per criminalità
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Padova</h2>
+        <div class="chart-container">
+            <canvas id="chartPadova"></canvas>
+        </div>
+        <div class="highlight">
+            <strong>Il Caso Veneto:</strong> Padova mantiene livelli costantemente elevati di inquinamento (62 giorni sforamento sia nel 2023 che 2024, PM2.5 a 24 µg/m³ - il più alto d'Italia). La provincia registra alta incidenza di criminalità minorile. L'area veneta (Padova, Vicenza, Verona) mostra la più forte correlazione tra inquinamento persistente e devianza giovanile.
+        </div>
+        <div class="note">
+            <strong>Dati Padova/Veneto:</strong><br>
+            • PM10: 2023→62 giorni, 2024→62 giorni (dato stabile e critico)<br>
+            • PM2.5: 24 µg/m³ (record italiano)<br>
+            • PM10 medio: 32 µg/m³ (molto alto)<br>
+            • Criminalità minorile provinciale: sopra media nazionale<br>
+            • Treviso: 9.5% denunciati sono minori (vs 4.6% media Italia)
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Confronto Nazionale 2019-2024: Il Trend Post-Pandemia</h2>
+        <div class="chart-container">
+            <canvas id="chartNazionale"></canvas>
+        </div>
+        <div class="highlight">
+            <strong>Il Quadro Generale:</strong> A livello nazionale, sia l'inquinamento che la criminalità mostrano un pattern chiaro: calo durante la pandemia (2020-2021), poi ripresa costante. Nel 2023 i reati tornano sopra i livelli 2019 (+1.7%). La criminalità minorile esplode: +30% rispetto al 2019, raggiungendo 38.247 minori denunciati nel 2024 (+16% solo sul 2023). L'inquinamento nelle città del Nord rimane persistentemente alto.
+        </div>
+        <div class="note">
+            <strong>Trend Nazionale Chiave:</strong><br>
+            • <strong>Criminalità totale:</strong> 2019→2.30M, 2020-2021→calo, 2022→2.25M, 2023→2.34M (+3.8% sul 2022, +1.7% sul 2019), 2024→2.38M<br>
+            • <strong>Criminalità minorile:</strong> 2019→27.929, 2023→~33.000, 2024→38.247 (+30% rispetto al 2019!)<br>
+            • <strong>PM10 Nord Italia:</strong> trend in lieve miglioramento ma ancora molto alto (media ~31 µg/m³)<br>
+            • <strong>Rapine in pubblica via:</strong> 2019→13.300, 2023→16.561 (+24.5%)<br>
+            • <strong>1 su 4 rapine</strong> in pubblica via è commessa da minori
+        </div>
+    </div>
+
+    <script>
+        // Configurazione comune
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: { size: 13 },
+                        padding: 15,
+                        usePointStyle: true
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    padding: 12,
+                    titleFont: { size: 14 },
+                    bodyFont: { size: 13 }
+                }
+            }
+        };
+
+        // MILANO
+        new Chart(document.getElementById('chartMilano'), {
+            type: 'line',
+            data: {
+                labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+                datasets: [
+                    {
+                        label: 'Giorni Sforamento PM10',
+                        data: [85, 90, 61, 84, 68, 68],
+                        borderColor: 'rgb(231, 76, 60)',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        yAxisID: 'y',
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    },
+                    {
+                        label: 'Criminalità (denunce/100k ab.)',
+                        data: [6762, 6200, 6400, 6991, 7093, 6952],
+                        borderColor: 'rgb(52, 152, 219)',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        yAxisID: 'y1',
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }
+                ]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Giorni Sforamento PM10',
+                            font: { size: 14, weight: 'bold' },
+                            color: 'rgb(231, 76, 60)'
+                        },
+                        ticks: { color: 'rgb(231, 76, 60)' },
+                        grid: { color: 'rgba(231, 76, 60, 0.1)' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Denunce ogni 100k abitanti',
+                            font: { size: 14, weight: 'bold' },
+                            color: 'rgb(52, 152, 219)'
+                        },
+                        ticks: { color: 'rgb(52, 152, 219)' },
+                        grid: { drawOnChartArea: false }
+                    }
+                }
+            }
+        });
+
+        // TORINO
+        new Chart(document.getElementById('chartTorino'), {
+            type: 'line',
+            data: {
+                labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+                datasets: [
+                    {
+                        label: 'Giorni Sforamento PM10',
+                        data: [60, 55, 50, 58, 66, 60],
+                        borderColor: 'rgb(142, 68, 173)',
+                        backgroundColor: 'rgba(142, 68, 173, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        yAxisID: 'y',
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    },
+                    {
+                        label: 'Criminalità (denunce/100k ab.)',
+                        data: [6030, 5500, 5700, 5900, 6193, 6100],
+                        borderColor: 'rgb(230, 126, 34)',
+                        backgroundColor: 'rgba(230, 126, 34, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        yAxisID: 'y1',
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }
+                ]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Giorni Sforamento PM10',
+                            font: { size: 14, weight: 'bold' },
+                            color: 'rgb(142, 68, 173)'
+                        },
+                        ticks: { color: 'rgb(142, 68, 173)' },
+                        grid: { color: 'rgba(142, 68, 173, 0.1)' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Denunce ogni 100k abitanti',
+                            font: { size: 14, weight: 'bold' },
+                            color: 'rgb(230, 126, 34)'
+                        },
+                        ticks: { color: 'rgb(230, 126, 34)' },
+                        grid: { drawOnChartArea: false }
+                    }
+                }
+            }
+        });
+
+        // PADOVA
+        new Chart(document.getElementById('chartPadova'), {
+            type: 'line',
+            data: {
+                labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+                datasets: [
+                    {
+                        label: 'Giorni Sforamento PM10',
+                        data: [65, 58, 55, 60, 62, 62],
+                        borderColor: 'rgb(46, 204, 113)',
+                        backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        yAxisID: 'y',
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    },
+                    {
+                        label: 'PM2.5 (µg/m³)',
+                        data: [26, 24, 23, 24, 24, 24],
+                        borderColor: 'rgb(241, 196, 15)',
+                        backgroundColor: 'rgba(241, 196, 15, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        yAxisID: 'y1',
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }
+                ]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Giorni Sforamento PM10',
+                            font: { size: 14, weight: 'bold' },
+                            color: 'rgb(46, 204, 113)'
+                        },
+                        ticks: { color: 'rgb(46, 204, 113)' },
+                        grid: { color: 'rgba(46, 204, 113, 0.1)' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'PM2.5 Media Annuale (µg/m³)',
+                            font: { size: 14, weight: 'bold' },
+                            color: 'rgb(241, 196, 15)'
+                        },
+                        ticks: { color: 'rgb(241, 196, 15)' },
+                        grid: { drawOnChartArea: false }
+                    }
+                }
+            }
+        });
+
+        // NAZIONALE
+        new Chart(document.getElementById('chartNazionale'), {
+            type: 'line',
+            data: {
+                labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+                datasets: [
+                    {
+                        label: 'Minori Denunciati (migliaia)',
+                        data: [27.9, 25, 26.5, 30, 33, 38.2],
+                        borderColor: 'rgb(231, 76, 60)',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        yAxisID: 'y',
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    },
+                    {
+                        label: 'Reati Totali (milioni)',
+                        data: [2.30, 2.05, 2.10, 2.25, 2.34, 2.38],
+                        borderColor: 'rgb(52, 152, 219)',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        yAxisID: 'y1',
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    },
+                    {
+                        label: 'PM10 Medio Nord Italia (µg/m³)',
+                        data: [32, 30, 29, 31, 31, 31],
+                        borderColor: 'rgb(46, 204, 113)',
+                        backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        yAxisID: 'y2',
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }
+                ]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Minori Denunciati (migliaia)',
+                            font: { size: 14, weight: 'bold' },
+                            color: 'rgb(231, 76, 60)'
+                        },
+                        ticks: { color: 'rgb(231, 76, 60)' },
+                        grid: { color: 'rgba(231, 76, 60, 0.1)' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Reati Totali (milioni)',
+                            font: { size: 14, weight: 'bold' },
+                            color: 'rgb(52, 152, 219)'
+                        },
+                        ticks: { color: 'rgb(52, 152, 219)' },
+                        grid: { drawOnChartArea: false }
+                    },
+                    y2: {
+                        type: 'linear',
+                        display: false,
+                        position: 'right',
+                        grid: { drawOnChartArea: false }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
